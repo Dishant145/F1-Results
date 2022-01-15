@@ -6,7 +6,7 @@ function display()
 
 function schedule() 
 {
-  let url1 = 'http://ergast.com/api/f1/2022.json';
+  let url1 = 'https://ergast.com/api/f1/2022.json';
   calendar(url1);
 }
 
@@ -116,7 +116,7 @@ function selectrace()
   
 function currentrace()
 {
-  fetch("http://ergast.com/api/f1/2021/22/results.json")
+  fetch("https://ergast.com/api/f1/2021/22/results.json")
     .then(response => response.json())
     .then(result =>
       {
