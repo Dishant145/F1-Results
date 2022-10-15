@@ -2,6 +2,7 @@ function display()
 {
   document.getElementById("bt1").style.visibility = "visible";
   document.getElementById("bt2").style.visibility = "visible";
+  selectsprintqualifying();
 }
 
 function schedule() 
@@ -111,6 +112,23 @@ function selectrace()
   let web2 = "/results.json";
   let url1 = circuit.concat(web2);
   ResultsTable(url1);
+} 
+
+
+
+function selectsprintqualifying()
+{
+  var rcircuit = document.getElementById('racecircuit');
+  var circuitvalue =rcircuit.options[rcircuit.selectedIndex].value;
+  var ryear = document.getElementById('raceyear');
+  var racevalue =ryear.options[ryear.selectedIndex].value;
+  let web1="https://ergast.com/api/f1/";
+  let year = web1.concat(racevalue + "/");
+  let circuit =year.concat(circuitvalue);
+  let web2 = "/sprint.json";
+  let url1 = circuit.concat(web2);
+  sprintqualifyingcheck(url1);
+
 }
 
   
@@ -378,4 +396,88 @@ function calendar(urlink)
     {
       console.log(error)
     })
+}
+
+
+function sprintqualifyingcheck(urlink)
+{
+  
+  fetch(urlink)
+  .then(response => response.json())
+  .then(result => 
+  {
+    data = result.MRData.total;
+    if (data!=0)
+    {
+      document.getElementById("bt4").style.visibility = "visible";
+    }
+    else
+    {
+      document.getElementById("bt4").style.visibility = "hidden";
+    }
+  })
+  .catch((error) =>
+      {
+        console.log(error)
+      })
+} 
+
+
+function sprintqualifyingget()
+{
+  var rcircuit = document.getElementById('racecircuit');
+  var circuitvalue =rcircuit.options[rcircuit.selectedIndex].value;
+  var ryear = document.getElementById('raceyear');
+  var racevalue =ryear.options[ryear.selectedIndex].value;
+  let web1="https://ergast.com/api/f1/";
+  let year = web1.concat(racevalue + "/");
+  let circuit =year.concat(circuitvalue);
+  let web2 = "/sprint.json";
+  let url1 = circuit.concat(web2);
+  sprintqualifyingtable(url1);
+}
+
+
+function sprintqualifyingtable(urlink)
+{
+  fetch(urlink)
+  .then(response => response.json())
+  .then(result => 
+  {
+    data = result.MRData.RaceTable.Races[0].SprintResults;
+        var output = document.getElementById("table1")
+        output.innerHTML = "";
+        output.innerHTML += `
+        <thead class = "heading">
+          <tr>
+          <th scope="col">Postion</th>
+          <th scope="col">Driver Number</th>
+          <th scope="col">Driver Name</th>
+          <th scope="col">Constructor</th>
+          <th scope="col">Grid</th>
+          <th scope="col">Status</th>
+          <th scope="col">Points</th>
+          </tr>
+        </thead>
+        `
+        data.forEach(element => 
+        {
+          
+          output.innerHTML += `
+          <tr>
+          <td>${element.position}</td>
+          <td>${element.number}</td>
+          <td>${element.Driver.givenName + ' ' + element.Driver.familyName}</td>
+          <td>${element.Constructor.name}</td>
+          <td>${element.grid}</td>
+          <td>${element.status}</td> 
+          <td>${element.points}</td>
+          </tr> 
+          `
+        });
+  })
+  .catch((error) =>
+      {
+        console.log(error)
+      })
 }
